@@ -13,7 +13,7 @@ import (
 func NewOOMProcess(pid int32) (*ProcessOOM, error) {
 	p := &ProcessOOM{}
 	p.Pid = pid
-	file, err := os.Open(filepath.Join(strconv.Itoa(int(p.Pid))))
+	file, err := os.Open(filepath.Join("/proc", strconv.Itoa(int(p.Pid))))
 	defer file.Close()
 	return p, err
 }
