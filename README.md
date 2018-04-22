@@ -20,14 +20,15 @@ $ go get github.com/dastergon/oomutil
 This is an example how to use this package:
 
 ```golang
-ps, err := NewOOMProcess(int32(1))
+pid := os.Getpid()
+ps, err := oomutil.NewOOMProcess(int32(pid))
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 oomScore, err := ps.OOMScore()
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 oomScoreAdj, err := ps.OOMScoreAdj()
@@ -39,6 +40,8 @@ memoryOvercommit, err := ps.MemoryOvercommit()
 if err != nil {
     log.Fatal(err)
 }
+
+fmt.Printf("Memory Overcommit: %d\nPID: %d => OOM Score: %d, OOM Score Adj: %d\n", memoryOvercommit, pid, oomScore, oomScoreAdj)
 ```
 
 ## Determining OOM Status
