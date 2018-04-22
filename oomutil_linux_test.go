@@ -2,6 +2,8 @@ package oomutil
 
 import (
 	"os"
+	"path/filepath"
+	"strconv"
 	"testing"
 )
 
@@ -11,8 +13,8 @@ func testNewProcess(t *testing.T) {
 	if err != nil {
 		t.Errorf("A valid object initialization should not return error: %v", err)
 	}
-	if *ret != &ProcessOOM{} {
-		t.Errorf("A valid call to NewOOMProcess should return ProcessOOM")
+	if ret == nil {
+		t.Errorf("A valid object initialization should not return nil: %T", ret)
 	}
 }
 
@@ -22,14 +24,16 @@ func testOOMScore(t *testing.T) {
 	if err != nil {
 		t.Errorf("A valid object initialization should not return error: %v", err)
 	}
-	if *ret != &ProcessOOM{} {
-		t.Errorf("A valid call to NewOOMProcess should return ProcessOOM")
+	if ret == nil {
+		t.Errorf("A valid object initialization should not return nil: %T", ret)
 	}
 
-	oomScore := ret.OOMScore()
-	i, ok := oomScore.(int32)
-	if !ok {
-		t.Fatal("A valid result would be a int32 type")
+	oomScore, err := ret.OOMScore()
+	if err != nil {
+		t.Errorf("A valid call should not return an error: %v", err)
+	}
+	if _, err := strconv.ParseInt(string(oomScore), 10, 32); err != nil {
+		t.Fatal("A valid result would be an int32 type")
 	}
 }
 
@@ -39,15 +43,17 @@ func testOOMScoreAdj(t *testing.T) {
 	if err != nil {
 		t.Errorf("A valid object initialization should not return error: %v", err)
 	}
-
-	if *ret != &ProcessOOM{} {
-		t.Errorf("A valid call to NewOOMProcess should return ProcessOOM")
+	if ret == nil {
+		t.Errorf("A valid object initialization should not return nil: %T", ret)
 	}
 
-	oomScoreAdj := ret.OOMScoreAdj()
-	i, ok := oomScoreAdj.(int32)
-	if !ok {
-		t.Fatal("A valid result would be a int32 type")
+	oomScoreAdj, err := ret.OOMScoreAdj()
+	if err != nil {
+		t.Errorf("A valid call should not return an error: %v", err)
+	}
+
+	if _, err := strconv.ParseInt(string(oomScoreAdj), 10, 32); err != nil {
+		t.Fatal("A valid result would be an int32 type")
 	}
 }
 
@@ -57,15 +63,16 @@ func testMemoryOvercommit(t *testing.T) {
 	if err != nil {
 		t.Errorf("A valid object initialization should not return error: %v", err)
 	}
-
-	if *ret != &ProcessOOM{} {
-		t.Errorf("A valid call to NewOOMProcess should return ProcessOOM")
+	if ret == nil {
+		t.Errorf("A valid object initialization should not return nil: %T", ret)
 	}
 
-	memoryOvercommit:= ret.MemoryOvercommit()
-	i, ok := memoryOvercommit.(int32)
-	if !ok {
-		t.Fatal("A valid result would be a int32 type")
+	memoryOvercommit, err := ret.MemoryOvercommit()
+	if err != nil {
+		t.Errorf("A valid call should not return an error: %v", err)
+	}
+	if _, err := strconv.ParseInt(string(memoryOvercommit), 10, 32); err != nil {
+		t.Fatal("A valid result would be an int32 type")
 	}
 }
 
@@ -75,17 +82,16 @@ func testFillFrom(t *testing.T) {
 	if err != nil {
 		t.Errorf("A valid object initialization should not return error: %v", err)
 	}
-
-	if *ret != &ProcessOOM{} {
-		t.Errorf("A valid call to NewOOMProcess should return ProcessOOM")
+	if ret == nil {
+		t.Errorf("A valid object initialization should not return nil: %T", ret)
 	}
 
-	val, err := ret.fillFrom(filepath.Join("/proc", strconv.Itoa(int(p.Pid)), fname))
+	val, err := ret.fillFrom(filepath.Join("/proc", strconv.Itoa(int(testPid)), "oom_score"))
 	if err != nil {
 		t.Errorf("A valid call to fillFrom should not return error: %v", err)
 	}
-	i, ok := val.(int32)
-	if !ok {
-		t.Fatal("A valid result would be a int32 type")
+
+	if _, err := strconv.ParseInt(string(val), 10, 32); err != nil {
+		t.Fatal("A valid result would be an int32 type")
 	}
 }
