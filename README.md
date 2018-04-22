@@ -11,7 +11,7 @@ Install using standard `go get`:
 
 ```shell
 
-$ go get github.com/dastergon/oomutil
+$ go get -u github.com/dastergon/oomutil
 
 ```
 
